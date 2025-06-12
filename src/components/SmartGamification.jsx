@@ -840,85 +840,108 @@ const SmartGamification = () => {
         <div className="tab-content">
           {/* Challenges Tab */}
           {activeTab === 'challenges' && (
-            <div className="challenges-grid">
-              <div className="challenges-header">
-                <h3>Active Challenges</h3>
-                <button 
-                  onClick={generateAIChallenge}
-                  className="generate-challenge-btn"
-                >
-                  <RefreshCw className="btn-icon" />
-                  Generate AI Challenge
+          <div className="challenges-grid">
+            <div className="challenges-header">
+              <h3>Active Challenges</h3>
+              <button onClick={generateAIChallenge} className="generate-challenge-btn">
+                <RefreshCw className="btn-icon" />
+                Generate AI Challenge
+              </button>
+            </div>
+            
+            {challenges.filter(c => !c.completed).length === 0 ? (
+              <div className="empty-state">
+                <div className="empty-icon">🎯</div>
+                <h4>No active challenges</h4>
+                <p>Generate a new challenge or check back later for updates</p>
+                <button onClick={generateAIChallenge} className="primary-btn">
+                  Generate Challenge
                 </button>
               </div>
-              
-              {challenges.filter(c => !c.completed).length === 0 ? (
-                <div className="empty-state">
-                  <div className="empty-icon">🎯</div>
-                  <h4>No active challenges</h4>
-                  <p>Generate a new challenge or check back later for updates</p>
-                  <button 
-                    onClick={generateAIChallenge}
-                    className="primary-btn"
-                  >
-                    Generate Challenge
-                  </button>
-                </div>
-              ) : (
-                <div className="challenges-list">
-                  {challenges.filter(c => !c.completed).map(challenge => (
-                    <div 
-                      key={challenge.id}
-                      className={`challenge-card ${challenge.color} ${challenge.active ? 'active' : ''}`}
-                    >
-                      <div className="challenge-icon">{challenge.icon}</div>
-                      <div className="challenge-content">
-                        <div className="challenge-header">
-                          <h4>{challenge.title}</h4>
-                          <span className={`difficulty-badge ${challenge.difficulty}`}>
-                            {challenge.difficulty}
-                          </span>
+            ) : (
+              <div className="challenges-list">
+                {challenges.filter(c => !c.completed).map(challenge => (
+                  <div key={challenge.id} className={`challenge-card ${challenge.color} ${challenge.active ? 'active' : ''}`}>
+                    <div className="challenge-icon">{challenge.icon}</div>
+                    <div className="challenge-content">
+                      <div className="challenge-header">
+                        <h4>{challenge.title}</h4>
+                        <span className={`difficulty-badge ${challenge.difficulty}`}>
+                          {challenge.difficulty}
+                        </span>
+                      </div>
+                      <p>{challenge.description}</p>
+                      
+                      <div className="challenge-progress">
+                        <div className="progress-bar">
+                          <div 
+                            className="progress-fill" 
+                            style={{ width: `${(challenge.current / challenge.target) * 100}%` }}
+                          ></div>
                         </div>
-                        <p>{challenge.description}</p>
-                        
-                        <div className="challenge-progress">
-                          <div className="progress-bar">
-                            <div 
-                              className="progress-fill" 
-                              style={{ width: `${(challenge.current / challenge.target) * 100}%` }}
-                            ></div>
-                          </div>
-                          <span>{challenge.current}/{challenge.target}</span>
-                        </div>
-                        
-                        <div className="challenge-footer">
-                          {challenge.active ? (
-                            <button 
-                              onClick={stopChallenge}
-                              className="action-btn stop"
-                            >
-                              <Pause className="btn-icon" />
-                              Stop
-                            </button>
-                          ) : (
-                            <button 
-                              onClick={() => startChallenge(challenge.id)}
-                              className="action-btn start"
-                            >
-                              <Play className="btn-icon" />
-                              Start
-                            </button>
-                          )}
-                           <div className="challenge-reward">
-                            <Star className="reward-icon" />
-                            +{challenge.points} pts
-                          </div>
+                        <span>{challenge.current}/{challenge.target}</span>
+                      </div>
+                      
+                      <div className="challenge-footer">
+                        {challenge.active ? (
+                          <>
+                            {/* Game interface appears here when challenge is active */}
+                            <div className="game-interface">
+                              <div className="game-header">
+                                <h4>Classify this item:</h4>
+                                <div className="game-timer">
+                                  <Timer className="timer-icon" />
+                                  <span>{gameSession.timeRemaining}s</span>
+                                </div>
+                              </div>
+                              <div className="game-item">{gameSession.currentMaterial}</div>
+                              
+                              <div className="game-categories">
+                                {Object.keys(wasteMaterials).map(category => (
+                                  <button
+                                    key={category}
+                                    onClick={() => handleAnswer(category)}
+                                    className="category-btn"
+                                  >
+                                    {category}
+                                  </button>
+                                ))}
+                              </div>
+                              
+                              <div className="game-stats">
+                                <span>Score: {gameSession.sessionScore}</span>
+                                <span>Accuracy: {gameSession.totalAnswers > 0 ? 
+                                  Math.round((gameSession.correctAnswers / gameSession.totalAnswers) * 100) : 0}%</span>
+                              </div>
+                              
+                              <button 
+                                onClick={stopChallenge}
+                                className="action-btn stop"
+                              >
+                                <Pause className="btn-icon" />
+                                Stop Challenge
+                              </button>
+                            </div>
+                          </>
+                        ) : (
+                          <button 
+                            onClick={() => startChallenge(challenge.id)}
+                            className="action-btn start"
+                          >
+                            <Play className="btn-icon" />
+                            Start
+                          </button>
+                        )}
+                        <div className="challenge-reward">
+                          <Star className="reward-icon" />
+                          +{challenge.points} pts
                         </div>
                       </div>
                     </div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
+              </div>
+            )}
               
               <div className="completed-challenges">
                 <h3>Completed Challenges</h3>

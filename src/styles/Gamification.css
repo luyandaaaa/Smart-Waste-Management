@@ -9,13 +9,11 @@
 
 /* Profile Card */
 .profile-card {
-  background: rgba(15, 46, 44, 0.8);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(79, 209, 199, 0.3);
+  background: #0f2e2c;
   border-radius: 20px;
   padding: 1.5rem;
   margin-bottom: 2rem;
-  transition: all 0.3s ease;
+  border: 1px solid rgba(79, 209, 199, 0.3);
 }
 
 .profile-header {
@@ -162,6 +160,12 @@
   width: 18px;
   height: 18px;
 }
+.tab-content {
+  border-radius: 0 0 20px 20px;
+  padding: 2rem;
+  border: 1px solid rgba(79, 209, 199, 0.3);
+  border-top: none;
+}
 
 /* Challenges */
 .challenges-grid {
@@ -211,7 +215,7 @@
 }
 
 .challenge-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: #0f2e2c;
   border-radius: 16px;
   padding: 1.2rem;
   display: flex;
@@ -219,10 +223,12 @@
   transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(79, 209, 199, 0.3);
 }
 
 .challenge-card.active {
-  border: 1px solid rgba(79, 209, 199, 0.5);
+  border: 2px solid #4fd1c7;
 }
 
 .challenge-card::before {
@@ -469,14 +475,11 @@
 }
 
 .achievement-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: #0f2e2c;
   border-radius: 16px;
   padding: 1.2rem;
-  display: flex;
-  gap: 1rem;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(79, 209, 199, 0.3);
 }
 
 .achievement-card.unlocked {
@@ -641,6 +644,7 @@
   gap: 1.5rem;
 }
 
+
 .leaderboard-header {
   display: flex;
   justify-content: space-between;
@@ -685,14 +689,11 @@
 }
 
 .leaderboard-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: #0f2e2c;
   border-radius: 16px;
   padding: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: all 0.3s ease;
-  position: relative;
+  margin-bottom: 0.8rem;
+  border: 1px solid rgba(79, 209, 199, 0.3);
 }
 
 .leaderboard-card.current-user {
@@ -827,12 +828,11 @@
 }
 
 .prediction-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: #0f2e2c;
   border-radius: 16px;
   padding: 1.2rem;
-  display: flex;
-  gap: 1rem;
-  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(79, 209, 199, 0.3);
 }
 
 .prediction-card:hover {
@@ -937,7 +937,7 @@
 }
 
 .impact-card {
-  background: rgba(255, 255, 255, 0.05);
+  background: #0f2e2c;
   border-radius: 12px;
   padding: 1rem;
   text-align: center;
