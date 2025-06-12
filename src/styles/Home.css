@@ -92,7 +92,9 @@
 .quick-actions {
   display: flex;
   gap: 0.5rem;
-  margin: 0 1rem;
+  margin: 0 auto;
+  justify-content: center;
+  flex-wrap: wrap;
 }
 
 .quick-action-btn {
@@ -110,6 +112,7 @@
   transition: all 0.3s ease;
   text-decoration: none;
   color: white;
+  flex-shrink: 0;
 }
 
 /* Main Content */

@@ -3,8 +3,10 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Trophy, Target, Users, Zap, Leaf, Recycle, Globe, Star, Award, TrendingUp, Camera, Crown, Medal, Gift, RefreshCw, Play, Pause, Timer, CheckCircle, XCircle, RotateCcw } from "lucide-react";
 import '../styles/Gamification.css';
+import RecyclingBanner from '../assets/Recycling-banner.webp';
+
 const SmartGamification = () => {
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('challenges');
   const [userStats, setUserStats] = useState({
     totalScans: 247,
@@ -702,7 +704,7 @@ const SmartGamification = () => {
 
   return (
     <div className="home-container" style={{
-      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('/api/placeholder/1200/800')`,
+      backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${RecyclingBanner})`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundAttachment: 'fixed',
@@ -710,25 +712,26 @@ const SmartGamification = () => {
       position: 'relative',
       overflowX: 'hidden'
     }}>
-      {/* Header */}
+      {/* Header matching Home page */}
       <header className="app-header">
         <div className="header-content">
-          <div className="logo-section">
-            <h1 className="app-title">
-              EcoScan Gamification
-            </h1>
-            <div className="logo-subtitle">AI-Powered Challenges</div>
-          </div>
-          
-          <div className="header-controls">
-            <select 
-              onChange={(e) => i18n.changeLanguage(e.target.value)}
-              className="language-selector"
-            >
-              <option value="en">🇺🇸 English</option>
-              <option value="zu">🇿🇦 isiZulu</option>
-              <option value="af">🇿🇦 Afrikaans</option>
-            </select>
+          <div className="municipal-header">
+            <Link to="/" className="back-btn">
+              &larr; {t('back')}
+            </Link>
+            <div className="municipal-title">
+              <h1 className="app-title">Gamification</h1>
+            </div>
+            <div className="header-controls">
+              <select 
+                onChange={(e) => i18n.changeLanguage(e.target.value)}
+                className="language-selector"
+              >
+                <option value="en">🇺🇸 English</option>
+                <option value="zu">🇿🇦 isiZulu</option>
+                <option value="af">🇿🇦 Afrikaans</option>
+              </select>
+            </div>
           </div>
         </div>
       </header>
@@ -1185,8 +1188,75 @@ const SmartGamification = () => {
         </div>
       </main>
 
-      {/* Game Interface */}
-      <GameInterface />
+      {/* Game Interface - Modified to appear at the bottom */}
+      {gameSession.isActive && activeChallenge && (
+        <div className="game-interface-container">
+          <div className="game-interface-content">
+            <div className="flex justify-between items-center mb-4">
+              <h3 className="text-xl font-bold text-white">{activeChallenge.title}</h3>
+              <button
+                onClick={stopChallenge}
+                className="text-gray-400 hover:text-white"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="text-center mb-6">
+              <div className="text-4xl mb-2">🗑️</div>
+              <h4 className="text-lg font-bold text-white mb-2">
+                Classify this item:
+              </h4>
+              <div className="text-2xl font-bold text-blue-400 mb-4">
+                {gameSession.currentMaterial}
+              </div>
+              
+              <div className="flex items-center justify-center gap-4 mb-4">
+                <div className="flex items-center gap-2">
+                  <Timer className="w-4 h-4 text-orange-400" />
+                  <span className="font-bold text-orange-400">
+                    {gameSession.timeRemaining}s
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-400" />
+                  <span className="font-bold text-yellow-400">
+                    {gameSession.sessionScore}
+                  </span>
+                </div>
+              </div>
+
+              <div className="mb-4">
+                <div className="text-sm text-gray-400 mb-2">
+                  Progress: {activeChallenge.current}/{activeChallenge.target}
+                </div>
+                <div className="w-full bg-gray-700 rounded-full h-2">
+                  <div 
+                    className="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-300"
+                    style={{ width: `${(activeChallenge.current / activeChallenge.target) * 100}%` }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              {Object.keys(wasteMaterials).map(category => (
+                <button
+                  key={category}
+                  onClick={() => handleAnswer(category)}
+                  className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-3 rounded-lg font-medium hover:shadow-lg transition-all capitalize"
+                >
+                  {category}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-4 text-center text-sm text-gray-400">
+              Accuracy: {gameSession.totalAnswers > 0 ? Math.round((gameSession.correctAnswers / gameSession.totalAnswers) * 100) : 0}%
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Notifications */}
       <NotificationContainer />
