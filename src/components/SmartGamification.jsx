@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { ChevronRight, Trophy, Target, Users, Zap, Leaf, Recycle, Globe, Star, Award, TrendingUp, Camera, Crown, Medal, Gift, RefreshCw, Play, Pause, Timer, CheckCircle, XCircle, RotateCcw } from "lucide-react";
-import './Gamification.css';
+import '../styles/Gamification.css';
 const SmartGamification = () => {
   const { i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('challenges');

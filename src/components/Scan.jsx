@@ -1,7 +1,7 @@
 import { useRef, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './Scan.css'; // Make sure to use this CSS file
-import RecyclingBanner from './assets/Recycling-banner.webp';
+import '../styles/Scan.css'; // Make sure to use this CSS file
+import RecyclingBanner from '../assets/Recycling-banner.webp';
 
 const wasteClasses = {
   en: ['Plastic', 'Paper', 'Metal', 'Glass', 'Organic', 'E-waste'],

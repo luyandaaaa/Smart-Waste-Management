@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-import './Home.css';
-import RecyclingBanner from './assets/Recycling-banner.webp';
+import '../styles/Home.css'; // 
+import RecyclingBanner from '../assets/Recycling-banner.webp';
 
 export default function Home({ setIsAuthenticated }) {
   const { t, i18n } = useTranslation();

@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import './Auth.css';
-import RecyclingBanner from './assets/Recycling-banner.webp';
+import '../styles/Auth.css'; 
+import RecyclingBanner from '../assets/Recycling-banner.webp';
 
 export default function Login({ setIsAuthenticated }) {
   const { t } = useTranslation();

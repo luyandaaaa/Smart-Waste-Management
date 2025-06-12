@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import './Rewards.css';
-import RecyclingBanner from './assets/Recycling-banner.webp';
+import '../styles/Rewards.css';
+import RecyclingBanner from '../assets/Recycling-banner.webp';
 
 const partnerOffers = {
   en: [

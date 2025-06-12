@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import './Auth.css';
-import recycling from './assets/recycling.jpg';
+import '../styles/Auth.css';
+import recycling from '../assets/recycling.jpg';
 
 export default function Signup({ setIsAuthenticated }) {
   const { t } = useTranslation();

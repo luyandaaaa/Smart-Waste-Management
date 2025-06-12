@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
-import './Municipal.css';
-import RecyclingBanner from './assets/Recycling-banner.webp';
+import '../assets/Municipal.css';
+import RecyclingBanner from '../assets/Recycling-banner.webp';
 
 
 export default function Municipal() {
