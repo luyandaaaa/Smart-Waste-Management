@@ -490,6 +490,12 @@ const SmartGamification = () => {
       }
     });
 
+    if (newPredictions.length === 0) {
+      showNotification("No new predictions available based on current progress", "info");
+    } else {
+      showNotification(`Generated ${newPredictions.length} new predictions`, "success");
+    }
+
     setPredictions(newPredictions);
   }, [userStats, achievements]);
 
@@ -573,22 +579,19 @@ const SmartGamification = () => {
     setActiveChallenge(challenge);
     
     if (challenge.type === "daily" && challenge.materials) {
-      // Start material identification game
       setGameSession({
         isActive: true,
         currentMaterial: getRandomMaterial(challenge.materials),
         correctAnswers: 0,
         totalAnswers: 0,
-        timeRemaining: 30, // 30 seconds per item
+        timeRemaining: 30,
         sessionScore: 0
       });
       
-      // Update challenge status
       setChallenges(prev => 
         prev.map(c => c.id === challengeId ? { ...c, active: true } : c)
       );
     } else if (challenge.type === "weekly" && challenge.categories) {
-      // Start category discovery game
       setGameSession({
         isActive: true,
         currentMaterial: getRandomMaterialFromCategory(challenge.categories),
@@ -628,80 +631,6 @@ const SmartGamification = () => {
     </div>
   );
 
-  // Game Interface Component
-  const GameInterface = () => {
-    if (!gameSession.isActive || !activeChallenge) return null;
-
-    return (
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-        <div className="bg-gray-800 rounded-xl p-6 max-w-md w-full">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-white">{activeChallenge.title}</h3>
-            <button
-              onClick={stopChallenge}
-              className="text-gray-400 hover:text-white"
-            >
-              ✕
-            </button>
-          </div>
-
-          <div className="text-center mb-6">
-            <div className="text-4xl mb-2">🗑️</div>
-            <h4 className="text-lg font-bold text-white mb-2">
-              Classify this item:
-            </h4>
-            <div className="text-2xl font-bold text-blue-400 mb-4">
-              {gameSession.currentMaterial}
-            </div>
-            
-            <div className="flex items-center justify-center gap-4 mb-4">
-              <div className="flex items-center gap-2">
-                <Timer className="w-4 h-4 text-orange-400" />
-                <span className="font-bold text-orange-400">
-                  {gameSession.timeRemaining}s
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Star className="w-4 h-4 text-yellow-400" />
-                <span className="font-bold text-yellow-400">
-                  {gameSession.sessionScore}
-                </span>
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <div className="text-sm text-gray-400 mb-2">
-                Progress: {activeChallenge.current}/{activeChallenge.target}
-              </div>
-              <div className="w-full bg-gray-700 rounded-full h-2">
-                <div 
-                  className="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${(activeChallenge.current / activeChallenge.target) * 100}%` }}
-                ></div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            {Object.keys(wasteMaterials).map(category => (
-              <button
-                key={category}
-                onClick={() => handleAnswer(category)}
-                className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-3 rounded-lg font-medium hover:shadow-lg transition-all capitalize"
-              >
-                {category}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-4 text-center text-sm text-gray-400">
-            Accuracy: {gameSession.totalAnswers > 0 ? Math.round((gameSession.correctAnswers / gameSession.totalAnswers) * 100) : 0}%
-          </div>
-        </div>
-      </div>
-    );
-  };
-
   return (
     <div className="home-container" style={{
       backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${RecyclingBanner})`,
@@ -712,7 +641,7 @@ const SmartGamification = () => {
       position: 'relative',
       overflowX: 'hidden'
     }}>
-      {/* Header matching Home page */}
+      {/* Header */}
       <header className="app-header">
         <div className="header-content">
           <div className="municipal-header">
@@ -738,7 +667,7 @@ const SmartGamification = () => {
 
       {/* Main Content */}
       <main className="gamification-container">
-        {/* User Profile Card */}
+        {/* Enhanced Profile Card */}
         <section className="profile-card">
           <div className="profile-header">
             <div className="avatar">👤</div>
@@ -748,56 +677,61 @@ const SmartGamification = () => {
                 Level {userStats.level} <span className="level-progress">({userStats.points}/{(userStats.level + 1) * 200} XP)</span>
               </div>
             </div>
+            <div className="profile-rank">
+              <Crown className="rank-icon" />
+              <span>Rank #{userStats.rank}</span>
+            </div>
           </div>
           
-          <div className="profile-stats">
+          <div className="profile-stats-grid">
             <div className="stat-item">
-              <Trophy className="stat-icon" />
-              <div>
+              <div className="stat-icon">
+                <Trophy />
+              </div>
+              <div className="stat-content">
                 <div className="stat-value">{userStats.points}</div>
                 <div className="stat-label">Points</div>
               </div>
             </div>
             <div className="stat-item">
-              <Target className="stat-icon" />
-              <div>
+              <div className="stat-icon">
+                <Target />
+              </div>
+              <div className="stat-content">
                 <div className="stat-value">{userStats.accuracy}%</div>
                 <div className="stat-label">Accuracy</div>
               </div>
             </div>
             <div className="stat-item">
-              <Zap className="stat-icon" />
-              <div>
+              <div className="stat-icon">
+                <Zap />
+              </div>
+              <div className="stat-content">
                 <div className="stat-value">{userStats.streak}</div>
                 <div className="stat-label">Day Streak</div>
               </div>
             </div>
-          </div>
-          
-          <div className="progress-bars">
-            <div className="progress-item">
-              <div className="progress-label">
-                <Leaf className="progress-icon" />
-                <span>CO₂ Saved</span>
-                <span>{userStats.co2Saved} kg</span>
+            <div className="stat-item">
+              <div className="stat-icon">
+                <Leaf />
               </div>
-              <div className="progress-bar">
-                <div 
-                  className="progress-fill bg-green-500" 
-                  style={{ width: `${Math.min(100, (userStats.co2Saved / 100) * 100)}%` }}
-                ></div>
+              <div className="stat-content">
+                <div className="stat-value">{userStats.co2Saved} kg</div>
+                <div className="stat-label">CO₂ Saved</div>
               </div>
             </div>
+          </div>
+          
+          <div className="progress-section">
             <div className="progress-item">
-              <div className="progress-label">
-                <Recycle className="progress-icon" />
-                <span>Waste Recycled</span>
-                <span>{userStats.wasteRecycled} kg</span>
+              <div className="progress-header">
+                <span>Level Progress</span>
+                <span>{Math.round((userStats.points / ((userStats.level + 1) * 200)) * 100)}%</span>
               </div>
               <div className="progress-bar">
                 <div 
-                  className="progress-fill bg-blue-500" 
-                  style={{ width: `${Math.min(100, (userStats.wasteRecycled / 200) * 100)}%` }}
+                  className="progress-fill" 
+                  style={{ width: `${(userStats.points / ((userStats.level + 1) * 200)) * 100}%` }}
                 ></div>
               </div>
             </div>
@@ -840,109 +774,106 @@ const SmartGamification = () => {
         <div className="tab-content">
           {/* Challenges Tab */}
           {activeTab === 'challenges' && (
-          <div className="challenges-grid">
-            <div className="challenges-header">
-              <h3>Active Challenges</h3>
-              <button onClick={generateAIChallenge} className="generate-challenge-btn">
-                <RefreshCw className="btn-icon" />
-                Generate AI Challenge
-              </button>
-            </div>
-            
-            {challenges.filter(c => !c.completed).length === 0 ? (
-              <div className="empty-state">
-                <div className="empty-icon">🎯</div>
-                <h4>No active challenges</h4>
-                <p>Generate a new challenge or check back later for updates</p>
-                <button onClick={generateAIChallenge} className="primary-btn">
-                  Generate Challenge
+            <div className="challenges-grid">
+              <div className="challenges-header">
+                <h3>Active Challenges</h3>
+                <button onClick={generateAIChallenge} className="generate-challenge-btn">
+                  <RefreshCw className="btn-icon" />
+                  Generate AI Challenge
                 </button>
               </div>
-            ) : (
-              <div className="challenges-list">
-                {challenges.filter(c => !c.completed).map(challenge => (
-                  <div key={challenge.id} className={`challenge-card ${challenge.color} ${challenge.active ? 'active' : ''}`}>
-                    <div className="challenge-icon">{challenge.icon}</div>
-                    <div className="challenge-content">
-                      <div className="challenge-header">
-                        <h4>{challenge.title}</h4>
-                        <span className={`difficulty-badge ${challenge.difficulty}`}>
-                          {challenge.difficulty}
-                        </span>
-                      </div>
-                      <p>{challenge.description}</p>
-                      
-                      <div className="challenge-progress">
-                        <div className="progress-bar">
-                          <div 
-                            className="progress-fill" 
-                            style={{ width: `${(challenge.current / challenge.target) * 100}%` }}
-                          ></div>
+              
+              {challenges.filter(c => !c.completed).length === 0 ? (
+                <div className="empty-state">
+                  <div className="empty-icon">🎯</div>
+                  <h4>No active challenges</h4>
+                  <p>Generate a new challenge or check back later for updates</p>
+                  <button onClick={generateAIChallenge} className="primary-btn">
+                    Generate Challenge
+                  </button>
+                </div>
+              ) : (
+                <div className="challenges-list">
+                  {challenges.filter(c => !c.completed).map(challenge => (
+                    <div key={challenge.id} className={`challenge-card ${challenge.color} ${challenge.active ? 'active' : ''}`}>
+                      <div className="challenge-icon">{challenge.icon}</div>
+                      <div className="challenge-content">
+                        <div className="challenge-header">
+                          <h4>{challenge.title}</h4>
+                          <span className={`difficulty-badge ${challenge.difficulty}`}>
+                            {challenge.difficulty}
+                          </span>
                         </div>
-                        <span>{challenge.current}/{challenge.target}</span>
-                      </div>
-                      
-                      <div className="challenge-footer">
+                        <p>{challenge.description}</p>
+                        
+                        <div className="challenge-progress">
+                          <div className="progress-bar">
+                            <div 
+                              className="progress-fill" 
+                              style={{ width: `${(challenge.current / challenge.target) * 100}%` }}
+                            ></div>
+                          </div>
+                          <span>{challenge.current}/{challenge.target}</span>
+                        </div>
+                        
                         {challenge.active ? (
-                          <>
-                            {/* Game interface appears here when challenge is active */}
-                            <div className="game-interface">
-                              <div className="game-header">
-                                <h4>Classify this item:</h4>
-                                <div className="game-timer">
-                                  <Timer className="timer-icon" />
-                                  <span>{gameSession.timeRemaining}s</span>
-                                </div>
+                          <div className="challenge-game">
+                            <div className="game-header">
+                              <h5>Classify this item:</h5>
+                              <div className="game-timer">
+                                <Timer className="timer-icon" />
+                                <span>{gameSession.timeRemaining}s</span>
                               </div>
-                              <div className="game-item">{gameSession.currentMaterial}</div>
-                              
-                              <div className="game-categories">
-                                {Object.keys(wasteMaterials).map(category => (
-                                  <button
-                                    key={category}
-                                    onClick={() => handleAnswer(category)}
-                                    className="category-btn"
-                                  >
-                                    {category}
-                                  </button>
-                                ))}
-                              </div>
-                              
-                              <div className="game-stats">
-                                <span>Score: {gameSession.sessionScore}</span>
-                                <span>Accuracy: {gameSession.totalAnswers > 0 ? 
-                                  Math.round((gameSession.correctAnswers / gameSession.totalAnswers) * 100) : 0}%</span>
-                              </div>
-                              
-                              <button 
-                                onClick={stopChallenge}
-                                className="action-btn stop"
-                              >
-                                <Pause className="btn-icon" />
-                                Stop Challenge
-                              </button>
                             </div>
-                          </>
+                            <div className="game-item">{gameSession.currentMaterial}</div>
+                            
+                            <div className="game-categories">
+                              {Object.keys(wasteMaterials).map(category => (
+                                <button
+                                  key={category}
+                                  onClick={() => handleAnswer(category)}
+                                  className="category-btn"
+                                >
+                                  {category}
+                                </button>
+                              ))}
+                            </div>
+                            
+                            <div className="game-stats">
+                              <span>Score: {gameSession.sessionScore}</span>
+                              <span>Accuracy: {gameSession.totalAnswers > 0 ? 
+                                Math.round((gameSession.correctAnswers / gameSession.totalAnswers) * 100) : 0}%</span>
+                            </div>
+                            
+                            <button 
+                              onClick={stopChallenge}
+                              className="action-btn stop"
+                            >
+                              <Pause className="btn-icon" />
+                              Stop Challenge
+                            </button>
+                          </div>
                         ) : (
-                          <button 
-                            onClick={() => startChallenge(challenge.id)}
-                            className="action-btn start"
-                          >
-                            <Play className="btn-icon" />
-                            Start
-                          </button>
+                          <div className="challenge-footer">
+                            <button 
+                              onClick={() => startChallenge(challenge.id)}
+                              className="action-btn start"
+                            >
+                              <Play className="btn-icon" />
+                              Start
+                            </button>
+                            <div className="challenge-reward">
+                              <Star className="reward-icon" />
+                              +{challenge.points} pts
+                            </div>
+                          </div>
                         )}
-                        <div className="challenge-reward">
-                          <Star className="reward-icon" />
-                          +{challenge.points} pts
-                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-              
+                  ))}
+                </div>
+              )}
+                
               <div className="completed-challenges">
                 <h3>Completed Challenges</h3>
                 {challenges.filter(c => c.completed).length === 0 ? (
@@ -1116,6 +1047,13 @@ const SmartGamification = () => {
               <div className="predictions-header">
                 <h3>AI Predictions & Recommendations</h3>
                 <p>Our AI analyzes your activity to predict future achievements and suggest improvements</p>
+                <button 
+                  onClick={generatePredictions}
+                  className="generate-predictions-btn"
+                >
+                  <RefreshCw className="btn-icon" />
+                  Generate New Predictions
+                </button>
               </div>
               
               {predictions.length === 0 ? (
@@ -1123,6 +1061,12 @@ const SmartGamification = () => {
                   <div className="empty-icon">🔮</div>
                   <h4>No predictions available</h4>
                   <p>Complete more challenges to get personalized predictions</p>
+                  <button 
+                    onClick={generatePredictions}
+                    className="primary-btn"
+                  >
+                    Generate Predictions
+                  </button>
                 </div>
               ) : (
                 <div className="predictions-grid">
@@ -1162,7 +1106,7 @@ const SmartGamification = () => {
                   ))}
                 </div>
               )}
-              
+                       
               <div className="impact-stats">
                 <h4>Your Environmental Impact</h4>
                 <div className="impact-grid">
@@ -1211,75 +1155,6 @@ const SmartGamification = () => {
         </div>
       </main>
 
-      {/* Game Interface - Modified to appear at the bottom */}
-      {gameSession.isActive && activeChallenge && (
-        <div className="game-interface-container">
-          <div className="game-interface-content">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-bold text-white">{activeChallenge.title}</h3>
-              <button
-                onClick={stopChallenge}
-                className="text-gray-400 hover:text-white"
-              >
-                ✕
-              </button>
-            </div>
-
-            <div className="text-center mb-6">
-              <div className="text-4xl mb-2">🗑️</div>
-              <h4 className="text-lg font-bold text-white mb-2">
-                Classify this item:
-              </h4>
-              <div className="text-2xl font-bold text-blue-400 mb-4">
-                {gameSession.currentMaterial}
-              </div>
-              
-              <div className="flex items-center justify-center gap-4 mb-4">
-                <div className="flex items-center gap-2">
-                  <Timer className="w-4 h-4 text-orange-400" />
-                  <span className="font-bold text-orange-400">
-                    {gameSession.timeRemaining}s
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Star className="w-4 h-4 text-yellow-400" />
-                  <span className="font-bold text-yellow-400">
-                    {gameSession.sessionScore}
-                  </span>
-                </div>
-              </div>
-
-              <div className="mb-4">
-                <div className="text-sm text-gray-400 mb-2">
-                  Progress: {activeChallenge.current}/{activeChallenge.target}
-                </div>
-                <div className="w-full bg-gray-700 rounded-full h-2">
-                  <div 
-                    className="bg-gradient-to-r from-green-400 to-blue-500 h-2 rounded-full transition-all duration-300"
-                    style={{ width: `${(activeChallenge.current / activeChallenge.target) * 100}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-3">
-              {Object.keys(wasteMaterials).map(category => (
-                <button
-                  key={category}
-                  onClick={() => handleAnswer(category)}
-                  className="bg-gradient-to-r from-blue-500 to-purple-500 text-white p-3 rounded-lg font-medium hover:shadow-lg transition-all capitalize"
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-4 text-center text-sm text-gray-400">
-              Accuracy: {gameSession.totalAnswers > 0 ? Math.round((gameSession.correctAnswers / gameSession.totalAnswers) * 100) : 0}%
-            </div>
-          </div>
-        </div>
-      )}
       
       {/* Notifications */}
       <NotificationContainer />
